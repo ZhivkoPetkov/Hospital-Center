@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace PatientService.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/people")]
     [ApiController]
     public class PatientController : ControllerBase
     {
@@ -68,5 +68,21 @@ namespace PatientService.Controllers
             return Ok(this.mapper.Map<ICollection<PatientOutputModel>>(patients));
         }
 
+        [HttpPost]
+        [Route("vaccine/{patientId}")]
+        public ActionResult AddVaccine(int patientId)
+        {
+            var patient = this.patientRepository.GetByPatientId(patientId);
+
+            if(patient is null)
+            {
+                return NotFound();
+            }
+            
+            patient.IsVaccinated = true;
+            patientRepository.SaveChanges();
+
+            return Ok();
+        }
     }
 }

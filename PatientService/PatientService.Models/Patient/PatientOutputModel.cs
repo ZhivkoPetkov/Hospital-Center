@@ -7,5 +7,6 @@
         public string LastName { get; set; }
         public string City { get; set; }
         public string NAN { get; set; }
+        public bool IsVaccinated {get; set; }
     }
 }

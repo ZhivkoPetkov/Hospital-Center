@@ -4,6 +4,11 @@ namespace PatientService.Domains
 {
     public class Patient : BaseEntity
     {
+        public Patient()
+        {
+            this.IsVaccinated = false;
+        }
+
         [Required]
         public string FirstName { get; set; }
         [Required]
@@ -14,5 +19,7 @@ namespace PatientService.Domains
         // National identification number
         [Required]
         public string NAN { get; set; }
+
+        public bool IsVaccinated { get; set; }
     }
 }
