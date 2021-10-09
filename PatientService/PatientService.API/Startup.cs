@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using PatientService.API.HttpProvider;
 using PatientService.Data;
 
 namespace PatientService
@@ -28,6 +29,8 @@ namespace PatientService
             {
                 opt.UseInMemoryDatabase("PatientsDb");
             });
+
+            services.AddHttpClient<IHttpProvider, HttpProvider>();
 
             services.AddScoped<IRepository, PatientRepository>();
 

@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vaccine-depl
+spec:
+  replicas: 1
+  selector: 
+    matchLabels:
+      app: vaccineservice
+  template:
+    metadata:
+      labels:
+        app: vaccineservice
+    spec:
+      containers:
+        - name: vaccineservice
+          image: zhivkopetkov/vaccineservice:latest
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vaccineservice-clusterip-srv
+spec:
+  type: ClusterIP
+  selector:
+    app: vaccineservice
+  ports:
+  - name: vaccineservice
+    protocol: TCP
+    port: 80
+    targetPort: 80

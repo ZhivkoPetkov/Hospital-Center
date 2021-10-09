@@ -7,6 +7,7 @@
   <ItemGroup>
     <ProjectReference Include="..\VaccineService.Data\VaccineService.Data.csproj" />
     <ProjectReference Include="..\VaccineService.Domains\VaccineService.Domains.csproj" />
+    <ProjectReference Include="..\VaccineService.Models\VaccineService.Models.csproj" />
   </ItemGroup>
 
 </Project>

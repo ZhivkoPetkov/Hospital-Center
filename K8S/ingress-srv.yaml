@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-srv
+  annotation: 
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/use-regex: 'true'
+spec:
+  rules: 
+    - host: acme.com
+      http:
+        paths:
+          - path: /api/patients
+            pathType: Prefix
+            backend:
+              service:
+                name: patientservice-clusterip-srv
+                port:
+                  number: 80
+          - path: /api/vaccine
+            pathType: Prefix
+            backend:
+              service:
+                name: vaccineservice-clusterip-srv
+                port:
+                  number: 80
+      

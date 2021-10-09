@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using VaccineService.Domains;
@@ -39,6 +38,18 @@ namespace VaccineService.API.Controllers
             var patients = this.patientService.All();
 
             return Ok(this.mapper.Map<ICollection<PatientOutputModel>>(patients));
+        }
+
+        [HttpPost()]
+        public ActionResult AddPatient(PatientInputModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+            var patients = this.patientService.AddPatient(this.mapper.Map<Patient>(model));
+
+            return Ok();
         }
     }
 }

@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using VaccineService.Data;
 using VaccineService.Domains;
+using VaccineService.Models.Patient;
 using VaccineService.Services.Contracts;
 
 namespace VaccineService.Services
@@ -15,6 +17,14 @@ namespace VaccineService.Services
         {
             this.dbContext = dbContext;
         }
+
+        public async Task<bool> AddPatient(Patient patient)
+        {
+            await this.dbContext.Patients.AddAsync(patient);
+            await dbContext.SaveChangesAsync();
+            return true;
+        }
+
         public ICollection<Patient> All()
             => this.dbContext.Patients.Include(g => g.Vaccnies).ToList();
 

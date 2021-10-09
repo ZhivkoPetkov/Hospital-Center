@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using PatientService.API.HttpProvider;
 using PatientService.Data;
 using PatientService.Domains;
 using PatientService.Models.Patient;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace PatientService.Controllers
 {
@@ -13,11 +15,13 @@ namespace PatientService.Controllers
     {
         private readonly IRepository patientRepository;
         private readonly IMapper mapper;
+        private readonly IHttpProvider httpProvider;
 
-        public PatientController(IRepository patientRepository, IMapper mapper)
+        public PatientController(IRepository patientRepository, IMapper mapper, IHttpProvider httpProvider)
         {
             this.patientRepository = patientRepository;
             this.mapper = mapper;
+            this.httpProvider = httpProvider;
         }
 
         [HttpGet("{id}", Name = "GetById")]
@@ -33,7 +37,7 @@ namespace PatientService.Controllers
         }
 
         [HttpPost()]
-        public ActionResult Create(PatientInputModel model)
+        public async Task<ActionResult> Create(PatientInputModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -52,6 +56,7 @@ namespace PatientService.Controllers
                 System.Console.WriteLine(ex.Message);
             }
 
+            await this.httpProvider.SendPatientData(model);
             return CreatedAtRoute(nameof(GetById), new { id = patient.Id }, patient);
         }
 
@@ -62,6 +67,6 @@ namespace PatientService.Controllers
 
             return Ok(this.mapper.Map<ICollection<PatientOutputModel>>(patients));
         }
-        
+
     }
 }

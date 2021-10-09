@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: patient-depl
+spec:
+  replicas: 1
+  selector: 
+    matchLabels:
+      app: patientservice
+  template:
+    metadata:
+      labels:
+        app: patientservice
+    spec:
+      containers:
+        - name: patientservice
+          image: zhivkopetkov/patientservice:latest
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: patientservice-clusterip-srv
+spec:
+  type: ClusterIP
+  selector:
+    app: patientservice
+  ports:
+  - name: patientservice
+    protocol: TCP
+    port: 80
+    targetPort: 80
