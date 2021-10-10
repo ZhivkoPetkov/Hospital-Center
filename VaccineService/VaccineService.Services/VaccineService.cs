@@ -27,7 +27,7 @@ namespace VaccineService.Services
             var vaccine = this.GetById(vaccineId);
             var pattient = this.patientService.GetById(patientId);
 
-            if (vaccine is null || pattient is null)
+            if (vaccine is null || pattient is null || this.dbContext.PatientVaccines.Any(x => x.PatientId == patientId && x.VaccineId == vaccineId))
             {
                 return false;
             }

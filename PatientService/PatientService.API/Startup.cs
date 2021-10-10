@@ -5,7 +5,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using PatientService.API.HttpProvider;
+using PatientService.API.AsyncDataProvider;
+using PatientService.API.EventProcessing;
 using PatientService.Data;
 
 namespace PatientService
@@ -30,9 +31,10 @@ namespace PatientService
                 opt.UseInMemoryDatabase("PatientsDb");
             });
 
-            services.AddHttpClient<IHttpProvider, HttpProvider>();
-
             services.AddScoped<IRepository, PatientRepository>();
+            services.AddSingleton<IMessageBusClient, MessabeBusClient>();
+            services.AddSingleton<IEventProcessor, EventProcessor>();
+            services.AddHostedService<MessageBusSubscriber>();
 
             services.AddAutoMapper(typeof(Startup));
 

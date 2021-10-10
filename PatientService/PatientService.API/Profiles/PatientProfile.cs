@@ -10,6 +10,7 @@ namespace PatientService.Profiles
         {
             CreateMap<PatientInputModel, Patient>();
             CreateMap<Patient, PatientOutputModel>();
+            CreateMap<Patient, PatientPublishModel>();
         }
     }
 }

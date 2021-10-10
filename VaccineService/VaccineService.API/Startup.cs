@@ -5,6 +5,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using VaccineService.API.AsyncDataProvider;
+using VaccineService.API.EventProcessing;
 using VaccineService.Data;
 using VaccineService.Services ;
 using VaccineService.Services.Contracts;
@@ -32,6 +34,11 @@ namespace VaccineService
             services.AddAutoMapper(typeof(Startup));
             services.AddTransient<IVaccineService, VaccineService.Services.VaccineService>();
             services.AddTransient<IPatientService, PattientService>();
+
+            services.AddSingleton<IEventProcessor, EventProcessor>();
+            services.AddSingleton<IMessageBusClient, MessabeBusClient>();
+            services.AddHostedService<MessageBusSubscriber>();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "VaccineService", Version = "v1" });

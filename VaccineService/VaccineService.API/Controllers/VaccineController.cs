@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using VaccineService.API.AsyncDataProvider;
 using VaccineService.Domains;
 using VaccineService.Models.Vaccine;
 using VaccineService.Services.Contracts;
@@ -13,11 +14,13 @@ namespace VaccineService.API.Controllers
     {
         private readonly IVaccineService vaccineService;
         private readonly IMapper mapper;
+        private readonly IMessageBusClient messageBusClient;
 
-        public VaccineController(IVaccineService vaccineService, IMapper mapper)
+        public VaccineController(IVaccineService vaccineService, IMapper mapper, IMessageBusClient messageBusClient)
         {
             this.vaccineService = vaccineService;
             this.mapper = mapper;
+            this.messageBusClient = messageBusClient;
         }
 
         [HttpGet]
@@ -68,6 +71,12 @@ namespace VaccineService.API.Controllers
             }
 
             var sucess = this.vaccineService.AddForPattient(model.VaccineId, model.PatientId);
+
+            this.messageBusClient.PublishVaccine(new VaccinePublishModel()
+            {
+                PatientId = model.PatientId,
+                Event = "Patient vaccinated"
+            });
 
             if (!sucess)
             {

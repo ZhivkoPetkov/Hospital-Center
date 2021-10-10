@@ -14,6 +14,10 @@ namespace PatientService.Data
         }
         public void Add(Patient entity)
         {
+            if (this.dbContext.Patients.Any(x => x.NAN == entity.NAN))
+            {
+                return;
+            }
             this.dbContext.Patients.Add(entity);
         }
 
@@ -25,6 +29,6 @@ namespace PatientService.Data
 
         public bool SaveChanges()
             => this.dbContext.SaveChanges() >= 0;
-        
+
     }
 }

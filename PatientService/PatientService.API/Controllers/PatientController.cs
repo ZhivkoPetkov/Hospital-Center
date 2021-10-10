@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using PatientService.API.HttpProvider;
+using PatientService.API.AsyncDataProvider;
 using PatientService.Data;
 using PatientService.Domains;
 using PatientService.Models.Patient;
@@ -15,13 +15,14 @@ namespace PatientService.Controllers
     {
         private readonly IRepository patientRepository;
         private readonly IMapper mapper;
-        private readonly IHttpProvider httpProvider;
+        private readonly IMessageBusClient messageBusClient;
 
-        public PatientController(IRepository patientRepository, IMapper mapper, IHttpProvider httpProvider)
+        public PatientController(IRepository patientRepository, IMapper mapper, 
+                                IMessageBusClient messageBusClient)
         {
             this.patientRepository = patientRepository;
             this.mapper = mapper;
-            this.httpProvider = httpProvider;
+            this.messageBusClient = messageBusClient;
         }
 
         [HttpGet("{id}", Name = "GetById")]
@@ -56,7 +57,8 @@ namespace PatientService.Controllers
                 System.Console.WriteLine(ex.Message);
             }
 
-            await this.httpProvider.SendPatientData(model);
+            this.messageBusClient.PublishPatient(this.mapper.Map<PatientPublishModel>(patient));
+
             return CreatedAtRoute(nameof(GetById), new { id = patient.Id }, patient);
         }
 
@@ -66,23 +68,6 @@ namespace PatientService.Controllers
             var patients = this.patientRepository.GetAll();
 
             return Ok(this.mapper.Map<ICollection<PatientOutputModel>>(patients));
-        }
-
-        [HttpPost]
-        [Route("vaccine/{patientId}")]
-        public ActionResult AddVaccine(int patientId)
-        {
-            var patient = this.patientRepository.GetByPatientId(patientId);
-
-            if(patient is null)
-            {
-                return NotFound();
-            }
-            
-            patient.IsVaccinated = true;
-            patientRepository.SaveChanges();
-
-            return Ok();
         }
     }
 }

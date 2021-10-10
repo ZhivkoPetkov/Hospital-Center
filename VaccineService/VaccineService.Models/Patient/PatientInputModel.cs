@@ -15,5 +15,8 @@ namespace VaccineService.Models.Patient
 
         [Required]
         public string NAN { get; set; }
+
+        [Required]
+        public string Event { get; set; }
     }
 }
